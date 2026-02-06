@@ -110,7 +110,46 @@ pos_na(c(1, NA, NA, 2, NA, 4, NA), c(NA, -5, 2, 4, 4, NA, 11)) # NULL
 
 # Question 2
 
-Load the `wmata_ridership` data frame into R from <https://dcgerard.github.io/stat_412_612/data/wmata_ridership.csv>. For each month, calculate the proportion of rides made on a given day of the month. Then make box plots of the proport
+Load the `wmata_ridership` data frame into R from <https://dcgerard.github.io/stat_412_612/data/wmata_ridership.csv>. For each month, calculate the proportion of rides made on a given day of the month. Then make box plots of ridership proportions by day of the week. But exclude any days from 2004 and 2005.
+
+```{r}
+options(scipen = 4)
+
+suppressMessages(wmata_ridership <- read_csv(
+  "https://dcgerard.github.io/stat_412_612/data/wmata_ridership.csv"
+  ))
+
+```
+
+
+## Proportion of rides made on a given day of the month.
+``` {r}
+wmata_ridership |>
+  mutate(
+    Date = as.Date(Date), 
+    Month = as.factor(format(Date, "%m")),
+    Day = as.factor(format(Date, "%d"))
+    ) |>
+  group_by(Month, Day) |>
+  summarize(Total = sum(Total)) |>
+  group_by(Month) |>
+  mutate(Prop = proportions(Total))
+```
+
+
+## Box plots of ridership proportions by day of the week (excluding any days from 2004 and 2005)
+``` {r}
+wmata_ridership |>
+  filter(Date >= "2006-01-01" | Date < "2004-01-01") |>
+  ggplot(aes(wday(Date, T), proportions(Total))) + 
+  geom_boxplot() + 
+  labs(
+    x = "Day of the Week",
+    y = "Proportion of Rides",
+    title = "Ridership Proportions by Day of the Week"
+    )
+```
+
 
 # Question 3:
 
