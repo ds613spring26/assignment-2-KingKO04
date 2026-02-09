@@ -238,8 +238,35 @@ dept <- str_extract(records, "[A-Z]{2,}")
 
 2.  **Convert `hire_date` into a proper `Date` object**, correctly handling all of the different date formats.
 
+```{r}
+# dates need to be changed differently. vectors cannot handle that but lists
+# can
+hire_dates_list <- list()
+for (i in seq_along(hire_dates)) {
+  hire_dates_list[[i]] <- as.Date(
+    hire_dates[i],
+    tryFormats = c(
+      "%m-%d-%Y", # has to be first b.c. months are smaller #s than years
+      "%F", 
+      "%d/%m/%Y",
+      "%B %d, %Y",
+      "%Y/%m/%d"
+      )
+    )
+}
+hire_dates <- c(as.Date(NULL)) # NULL needs to be a Date o.e. it breaks
+for (i in seq_along(hire_dates_list))
+  hire_dates <- c(hire_dates, hire_dates_list[[i]])
+
+rm(hire_dates_list) # don't need it anymore
+```
+
 3.  **Convert `dept` into an ordered factor** with the levels:\
     `HR`, `FIN`, `IT`, `MKT`.
+
+```{r}
+dept <- factor(dept, c("HR", "FIN", "IT", "MKT"))
+```
 
 4.  **Construct a clean data frame** containing the parsed and converted variables.
 
