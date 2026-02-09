@@ -276,4 +276,16 @@ records_df <- data.frame(name, hire_date, dept)
 
 5.  **Add a new variable** called `years_worked` that reports the number of full years each employee has worked as of today.
 
+```{r}
+records_df <- mutate(
+  records_df, 
+  years_worked = as.integer((today() - as.Date(hire_date)) / 365)
+    )
+```
+
 6.  **Return the final cleaned data frame.**
+
+```{r}
+records_df
+```
+
