@@ -229,8 +229,8 @@ records
     -   `dept`
 
 ```{r}
-names <- str_extract(records, "^\\S+\\s\\S+")
-hire_dates <- str_extract(
+name <- str_extract(records, "^\\S+\\s\\S+")
+hire_date <- str_extract(
   str_extract(records, "\\|.+\\|"),
   "[[:alnum:]].+[[:alnum:]]")
 dept <- str_extract(records, "[A-Z]{2,}")
@@ -241,10 +241,10 @@ dept <- str_extract(records, "[A-Z]{2,}")
 ```{r}
 # dates need to be changed differently. vectors cannot handle that but lists
 # can
-hire_dates_list <- list()
-for (i in seq_along(hire_dates)) {
-  hire_dates_list[[i]] <- as.Date(
-    hire_dates[i],
+hire_date_list <- list()
+for (i in seq_along(hire_date)) {
+  hire_date_list[[i]] <- as.Date(
+    hire_date[i],
     tryFormats = c(
       "%m-%d-%Y", # has to be first b.c. months are smaller #s than years
       "%F", 
@@ -254,11 +254,11 @@ for (i in seq_along(hire_dates)) {
       )
     )
 }
-hire_dates <- c(as.Date(NULL)) # NULL needs to be a Date o.e. it breaks
-for (i in seq_along(hire_dates_list))
-  hire_dates <- c(hire_dates, hire_dates_list[[i]])
+hire_date <- c(as.Date(NULL)) # NULL needs to be a Date o.e. it breaks
+for (i in seq_along(hire_date_list))
+  hire_date <- c(hire_date, hire_date_list[[i]])
 
-rm(hire_dates_list) # don't need it anymore
+rm(hire_date_list) # don't need it anymore
 ```
 
 3.  **Convert `dept` into an ordered factor** with the levels:\
@@ -269,6 +269,10 @@ dept <- factor(dept, c("HR", "FIN", "IT", "MKT"))
 ```
 
 4.  **Construct a clean data frame** containing the parsed and converted variables.
+
+```{r}
+records_df <- data.frame(name, hire_date, dept)
+```
 
 5.  **Add a new variable** called `years_worked` that reports the number of full years each employee has worked as of today.
 
